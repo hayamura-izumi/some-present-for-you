@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Valentine - Ledakan Hati</title>
+    <style>
+        :root {
+            --pink: #ff4d6d;
+            --dark-pink: #c9184a;
+            --bg-color: #fff0f3;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--bg-color);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Hati Utama */
+        #heart-main {
+            position: relative;
+            width: 100px;
+            height: 90px;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 10;
+        }
+
+        #heart-main:before, #heart-main:after {
+            content: "";
+            position: absolute;
+            left: 50px;
+            top: 0;
+            width: 50px;
+            height: 80px;
+            background: var(--pink);
+            border-radius: 50px 50px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+
+        #heart-main:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        #heart-main:hover { transform: scale(1.2); }
+
+        /* Partikel Ledakan */
+        .heart-particle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 20px;
+            z-index: 5;
+        }
+
+        /* Tampilan Surat */
+        #letter {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(255, 77, 109, 0.2);
+            max-width: 350px;
+            text-align: center;
+            border: 3px solid var(--pink);
+            animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h2 { color: var(--dark-pink); margin-top: 0; }
+        p { color: #444; font-size: 1.1em; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+
+    <div id="heart-main" onclick="kaboom(this)"></div>
+
+    <div id="letter">
+        <h2>Happy Valentine! Cinta Shafa Oktaviana ❤️</h2>
+        <p>yoww, selamat hari valentine yaa, sayang banget hari ini kita gabisa rayain valentine bareng, jadi aku kasi ini aja❤️. aku juga mau bilang makasiihhh banget karena udah pernah ajak aku ngerayain valentine dulu, walau low budget sih :v awkowaokokw, yah makasih ya udah ngasi aku pengalaman ngerayain valentine, jujur aja cuma kamu orang pertama yang pernah ngajak aku ngerayain valentine aku sendiri dulu gak pede ketika mau ngerayain valentine ama kamu, tapi pas liat effortmu yang ngasi website valentine itu, jadi pengen ku bales, makasih banyak yaa sama semua hal baik yang udah kamu kasi ke aku💝,semoga di tahun ini kamu tetap jadi yang terbaik dan jangan peduliin kata orang yang iri sama kamu, aku bakal terus dukunng kamu, kalau kamu ada masalah ceritakan saja semuanya padaku💖</p>
+        <p style="font-size: 0.9em; font-style: italic;">yah segitu aja sih suratnya :v, kuharap kamu suka, dann aku juga gak ngeharapin hadiah dari kamu karenqa aku mau ngasi ini diem diem :v tapi liat kamu seneng karena ini, aku udah puas kok, yah segitu aja yaaa love youu💖</p>
+    </div>
+
+    <script>
+        function kaboom(element) {
+            const rect = element.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+
+            // Buat ledakan hati yang BANYAK (100 partikel)
+            for (let i = 0; i < 100; i++) {
+                createHeart(x, y);
+            }
+
+            // Sembunyikan hati utama
+            element.style.display = 'none';
+
+            // Munculkan surat setelah sedikit delay
+            setTimeout(() => {
+                document.getElementById('letter').style.display = 'block';
+            }, 500);
+        }
+
+        function createHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.innerHTML = '❤️'; // Kamu bisa ganti atau campur dengan '💖', '💗', '🌸'
+            document.body.appendChild(heart);
+
+            // Posisi awal di tengah
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+
+            // Arah ledakan acak ke segala arah
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 15 + 5;
+            const destinationX = (Math.cos(angle) * (Math.random() * 500));
+            const destinationY = (Math.sin(angle) * (Math.random() * 500));
+
+            const animation = heart.animate([
+                { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
+                { transform: `translate(${destinationX}px, ${destinationY}px) scale(${Math.random() * 2 + 1}) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+            ], {
+                duration: 1500 + Math.random() * 1000,
+                easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)'
+            });
+
+            animation.onfinish = () => heart.remove();
+        }
+
+        // Bonus: Klik di mana saja setelah surat muncul untuk ledakan kecil tambahan
+        document.addEventListener('click', (e) => {
+            if(document.getElementById('letter').style.display === 'block') {
+                for(let i=0; i<10; i++) createHeart(e.clientX, e.clientY);
+            }
+        });
+    </script>
+</body>
+</html>
